@@ -17,7 +17,10 @@
     },
     "devDependencies": {
         "@types/bun": "*",
-        "typescript": "*"
+        "@wxn0brp/ac": "^0.0.3",
+        "@wxn0brp/gloves-link-server": "~0.1.0",
+        "typescript": "*",
+        "tsc-alias": "*"
     },
     "peerDependencies": {
         "@wxn0brp/ac": "^0.0.3",
