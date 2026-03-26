@@ -11,10 +11,7 @@ export interface SpamThresholds {
 
 declare module "@wxn0brp/gloves-link-server" {
     interface GLSocket {
-        logError: (e: Error) => void;
         onLimit: (event: string, limit: number, fn: Function) => void;
-        timeOutMap: Map<string, { t: number, i: number }>
-        processSocketError: (err: Socket_StandardRes, cb?: Function) => boolean
     }
 }
 
@@ -27,13 +24,22 @@ export type Socket_StandardRes_Error = [
 ];
 
 export interface Socket_StandardRes<T = any> {
-    err: false | Socket_StandardRes_Error[]
-    res?: T
+    err: false | Socket_StandardRes_Error[];
+    res?: T;
 }
 
 export type Events = [
     string,
     number,
     boolean,
-    (user: GLSocket["user"], ...args: any[]) => Promise<Socket_StandardRes>
+    (socket: GLSocket, ...args: any[]) => Promise<Socket_StandardRes> | Socket_StandardRes
 ]
+
+export type ProcessSocketError = (res: Socket_StandardRes, cb?: Function) => boolean;
+export type SocketOnError = (e: Error) => void;
+
+export interface SocketLimit {
+    socket: GLSocket;
+    onError: SocketOnError;
+    processSocketError: ProcessSocketError;
+}

@@ -1,17 +1,17 @@
 import { GLSocket } from "@wxn0brp/gloves-link-server";
-import { Events, Socket_StandardRes, Socket_StandardRes_Error } from "./types";
-import { SocketEventLimiter } from "./limiter";
 import { SocketEventEngine } from "./engine";
+import { SocketEventLimiter } from "./limiter";
+import { Events, Socket_StandardRes, Socket_StandardRes_Error, SocketLimit, SocketOnError } from "./types";
 
-export function setupSocket(socket: GLSocket, all_events: Events[][]) {
-    socket.logError = (e) => {
-        console.log("Error: ", e);
-    }
-
+export function setupSocket(
+    socket: GLSocket,
+    all_events: Events[][],
+    logError: SocketOnError = (e) => console.log("Error: ", e)
+) {
     const limiter = new SocketEventLimiter(socket);
     socket.onLimit = limiter.onLimit.bind(limiter);
 
-    socket.processSocketError = (res: Socket_StandardRes, cb?: Function) => {
+    function processSocketError(res: Socket_StandardRes, cb?: Function) {
         const err = res.err;
         if (!Array.isArray(err)) return false;
 
@@ -21,13 +21,17 @@ export function setupSocket(socket: GLSocket, all_events: Events[][]) {
         return true;
     }
 
-    const engine = new SocketEventEngine(socket);
-
-    for (const events of all_events) {
-        for (const event of events) {
-            engine.add(event[0], event[1], event[2], event[3]);
-        }
+    const socketLimit: SocketLimit = {
+        socket,
+        onError: logError,
+        processSocketError
     }
+
+    const engine = new SocketEventEngine(socketLimit);
+
+    for (const events of all_events)
+        for (const event of events)
+            engine.add(event[0], event[1], event[2], event[3]);
 
     return {
         socket,

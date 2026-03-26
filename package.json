@@ -17,14 +17,14 @@
     },
     "devDependencies": {
         "@types/bun": "*",
-        "@wxn0brp/ac": "^0.0.3",
-        "@wxn0brp/gloves-link-server": "~0.1.0",
-        "typescript": "*",
-        "tsc-alias": "*"
+        "@wxn0brp/ac": "~0.0.3",
+        "@wxn0brp/gloves-link-server": "~0.1.1",
+        "typescript": "^6",
+        "tsc-alias": "^1"
     },
     "peerDependencies": {
-        "@wxn0brp/ac": "^0.0.3",
-        "@wxn0brp/gloves-link-server": "~0.1.0"
+        "@wxn0brp/ac": "~0.0.3",
+        "@wxn0brp/gloves-link-server": "~0.1.1"
     },
     "files": [
         "dist"

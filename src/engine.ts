@@ -1,27 +1,25 @@
-import { GLSocket } from "@wxn0brp/gloves-link-server";
+import { SocketLimit } from "./types";
 
 export class SocketEventEngine {
-    socket: GLSocket;
-
-    constructor(socket: GLSocket) {
-        this.socket = socket;
-    }
+    constructor(public socketLimitConfig: SocketLimit) { }
 
     add(evt: string, time: number, isReturn: boolean, cpu: Function) {
-        this.socket.onLimit(evt, time, async (...args: any) => {
-            try {
-                const data = await cpu(this.socket.user, ...args);
+        const { socket, processSocketError, onError } = this.socketLimitConfig;
 
-                if (this.socket.processSocketError(data)) return;
+        socket.onLimit(evt, time, async (...args: any) => {
+            try {
+                const data = await cpu(socket.user, ...args);
+
+                if (processSocketError(data)) return;
 
                 if (isReturn) {
                     const cb = typeof args[args.length - 1] === "function" ? args.pop() : null;
                     const res = data.res || [];
                     if (cb) cb(...res);
-                    else this.socket.emit(evt, ...res);
+                    else socket.emit(evt, ...res);
                 }
             } catch (e) {
-                this.socket.logError(e);
+                onError(e);
             }
         });
     }
