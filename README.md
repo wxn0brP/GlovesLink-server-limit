@@ -18,7 +18,7 @@ import { GLSocket } from "@wxn0brp/gloves-link-server";
 const events: Events[][] = [
   [
     // [eventName, timeLimit, isReturn, handler]
-    ["sendMessage", 100, true, async (user, message, cb) => {
+    ["sendMessage", 100, true, async (socket, message, cb) => {
       // Handle message
       return { res: ["ok"] };
     }]
