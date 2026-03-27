@@ -34,7 +34,6 @@ export function setupSocket(
             engine.add(event[0], event[1], event[2], event[3]);
 
     return {
-        socket,
         engine,
         limiter
     }

@@ -12,22 +12,33 @@ bun add @wxn0brp/gls-limit @wxn0brp/gloves-link-server @wxn0brp/ac
 
 ```typescript
 import { setupSocket } from "@wxn0brp/gls-limit";
+import { Events, Socket_StandardRes } from "@wxn0brp/gls-limit/types";
+import { SocketRes } from "@wxn0brp/gls-limit/validError";
 import { GLSocket } from "@wxn0brp/gloves-link-server";
 
 // Define your events
 const events: Events[][] = [
   [
     // [eventName, timeLimit, isReturn, handler]
-    ["sendMessage", 100, true, async (socket, message, cb) => {
-      // Handle message
-      return { res: ["ok"] };
-    }]
+    ["handle.message", 100, true, handle_message],
   ]
 ];
 
+async function handle_message(socket: GLSocket, message: string): Promise<Socket_StandardRes> {
+  const res = new SocketRes("handle.message");
+
+  if (!message) return res.valid("message is required");
+  if (typeof message !== "string") return res.valid("message must be a string");
+
+  // ...
+
+  // Response will be sent via the callback function passed as the last parameter.
+  return res.send("message sent");
+}
+
 // Setup socket with limiter and engine
 function onConnection(socket: GLSocket) {
-  const { socket, engine, limiter } = setupSocket(socket, events);
+  const { engine, limiter } = setupSocket(socket, events);
 }
 ```
 
@@ -44,7 +55,6 @@ Initializes the socket with rate limiting and event handling capabilities.
 **Returns:**
 ```typescript
 {
-  socket: GLSocket,
   engine: SocketEventEngine,
   limiter: SocketEventLimiter
 }

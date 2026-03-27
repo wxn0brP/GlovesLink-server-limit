@@ -1,6 +1,6 @@
 import { Socket_event, Socket_StandardRes } from "./types";
 
-export default class ValidError {
+export class SocketRes {
     module: Socket_event;
 
     constructor(module: Socket_event) {
@@ -16,6 +16,13 @@ export default class ValidError {
     err(...err: any[]): Socket_StandardRes {
         return {
             err: ["error", this.module, ...err]
+        }
+    }
+
+    send(...data: any[]): Socket_StandardRes {
+        return {
+            err: false,
+            res: data
         }
     }
 }
