@@ -1,6 +1,6 @@
 # @wxn0brp/gls-limit
 
-A rate limiting and event management library for GlovesLink server sockets. Provides spam protection, event throttling, and structured error handling.
+Rate limiting and event management library for GlovesLink server sockets.
 
 ## Installation
 
@@ -16,10 +16,8 @@ import { Events, Socket_StandardRes } from "@wxn0brp/gls-limit/types";
 import { SocketRes } from "@wxn0brp/gls-limit/validError";
 import { GLSocket } from "@wxn0brp/gloves-link-server";
 
-// Define your events
 const events: Events[][] = [
   [
-    // [eventName, timeLimit, isReturn, handler]
     ["handle.message", 100, true, handle_message],
   ]
 ];
@@ -30,13 +28,9 @@ async function handle_message(socket: GLSocket, message: string): Promise<Socket
   if (!message) return res.valid("message is required");
   if (typeof message !== "string") return res.valid("message must be a string");
 
-  // ...
-
-  // Response will be sent via the callback function passed as the last parameter.
   return res.data("message sent");
 }
 
-// Setup socket with limiter and engine
 function onConnection(socket: GLSocket) {
   const { engine, limiter } = setupSocket(socket, events);
 }
@@ -44,116 +38,75 @@ function onConnection(socket: GLSocket) {
 
 ## API
 
-### `setupSocket(socket, events)`
+### `setupSocket(socket, events, logError?)`
 
-Initializes the socket with rate limiting and event handling capabilities.
-
-**Parameters:**
-- `socket: GLSocket` - The GlovesLink socket instance
-- `events: Events[][]` - Array of event definitions
-
-**Returns:**
 ```typescript
-{
-  engine: SocketEventEngine,
-  limiter: SocketEventLimiter
-}
+import { setupSocket } from "@wxn0brp/gls-limit";
+
+const { engine, limiter } = setupSocket(socket, events);
 ```
 
-### Socket Extensions
+**Returns:**
+- `engine: SocketEventEngine` - Event handler with rate limiting
+- `limiter: SocketEventLimiter` - Rate limiter instance
 
-The library extends `GLSocket` with additional methods:
+### Rate Limiting
 
-- `logError(e: Error)` - Error logging function
-- `onLimit(event, limit, fn)` - Register rate-limited event handler
-- `processSocketError(res, cb?)` - Process and emit error responses
-
-## Rate Limiting
-
-### Spam Thresholds
-
-Default thresholds:
+Default spam thresholds:
 
 ```typescript
 {
-  warningDelay: 100,      // ms delay before processing after warnLimit
+  warningDelay: 100,      // ms delay after warnLimit
   warnLimit: 1,           // warnings before action
   spamLimit: 5,           // max events before blocking
   disconnectLimit: 15,    // events before disconnect + ban
-  resetInterval: 1000,    // ms before counter resets
-  banDuration: 600000     // 10 minutes ban
+  resetInterval: 1000,    // ms before counter reset
+  banDuration: 600000     // 10 minutes
 }
 ```
 
-### Custom Thresholds
-
-```typescript
-const limiter = new SocketEventLimiter(socket, {
-  spamLimit: 10,
-  resetInterval: 2000
-});
-```
-
-### Banned Users
-
-Access the banned users cache:
-
+**Banned users:**
 ```typescript
 import { bannedUsers } from "@wxn0brp/gls-limit/limiter";
 
-// Check if user is banned
 const banExpiry = bannedUsers.get(userId);
 ```
 
-## Event Engine
-
-### `SocketEventEngine.add(event, time, isReturn, handler)`
-
-Registers an event handler with rate limiting.
-
-**Parameters:**
-- `event: string` - Event name
-- `time: number` - Time limit in ms
-- `isReturn: boolean` - Whether to return response to client
-- `handler: Function` - Async handler `(user, ...args) => Promise<Socket_StandardRes>`
-
-## Error Handling
-
-### `ValidError`
-
-Helper class for structured error responses:
+### Error Handling
 
 ```typescript
-import ValidError from "@wxn0brp/gls-limit/validError";
+import { SocketRes } from "@wxn0brp/gls-limit/validError";
 
-const validError = new ValidError("userModule");
+const res = new SocketRes("event.name");
 
-// Return validation error
-return validError.valid("Invalid username");
-// { err: ["error.valid", "userModule", "Invalid username"] }
-
-// Return general error
-return validError.err("Database connection failed");
-// { err: ["error", "userModule", "Database connection failed"] }
+res.data({ key: "value" });           // Success response
+res.valid("Field is required");       // Validation error
+res.err("Something went wrong");      // General error
 ```
 
-### Response Format
+### Events
+
+- spam notifications via `error.spam`:
 
 ```typescript
-interface Socket_StandardRes<T = any> {
-  err: false | ["error" | "error.valid", string, ...any[]]
-  res?: T
-}
+socket.on("error.spam", (type, ...args) => {
+  // "warn"           - Warning issued
+  // "last", time     - Final warning (time in seconds)
+  // "ban", duration  - User banned (duration in ms)
+});
 ```
 
-## Events
+- validation errors via `error.valid`:
 
-### Client-emitted Events
+```typescript
+socket.on("error.valid", (module, ...args) => {});
+```
 
-- `error.spam` - Spam detection notifications
-  - `"warn"` - Warning threshold approached
-  - `"last", time` - Final warning with reset time in seconds
-  - `"ban", duration` - User banned with duration in ms
+- general errors via `error`:
+
+```typescript
+socket.on("error", (module, ...args) => {});
+```
 
 ## License
 

@@ -3,7 +3,7 @@
     "version": "0.0.3",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
-    "description": "",
+    "description": "Rate limiting and event management library for GlovesLink server sockets",
     "repository": {
         "type": "git",
         "url": "https://github.com/wxn0brP/GlovesLink-server-limit.git"
