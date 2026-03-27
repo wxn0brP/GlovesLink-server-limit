@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/wxn0brP/GlovesLink-server-limit/compare/v0.0.3...v0.0.4) (2026-03-27)
+
+
+### Bug Fixes
+
+* engine ([752f4de](https://github.com/wxn0brP/GlovesLink-server-limit/commit/752f4deee95102f9e15ec5db639716bb0242dc75))
+
 ### [0.0.3](https://github.com/wxn0brP/GlovesLink-server-limit/compare/v0.0.2...v0.0.3) (2026-03-27)
 
 
