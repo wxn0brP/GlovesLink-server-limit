@@ -8,7 +8,7 @@ export class SocketEventEngine {
 
         socket.onLimit(evt, time, async (...args: any) => {
             try {
-                const data = await cpu(socket.user, ...args);
+                const data = await cpu(socket, ...args);
 
                 if (processSocketError(data)) return;
 
