@@ -33,7 +33,7 @@ async function handle_message(socket: GLSocket, message: string): Promise<Socket
   // ...
 
   // Response will be sent via the callback function passed as the last parameter.
-  return res.send("message sent");
+  return res.data("message sent");
 }
 
 // Setup socket with limiter and engine

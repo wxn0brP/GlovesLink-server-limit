@@ -1,11 +1,7 @@
 import { Socket_event, Socket_StandardRes } from "./types";
 
 export class SocketRes {
-    module: Socket_event;
-
-    constructor(module: Socket_event) {
-        this.module = module;
-    }
+    constructor(public module: Socket_event) { }
 
     valid(...err: any[]): Socket_StandardRes {
         return {
@@ -19,7 +15,7 @@ export class SocketRes {
         }
     }
 
-    send(...data: any[]): Socket_StandardRes {
+    data(...data: any[]): Socket_StandardRes {
         return {
             err: false,
             res: data
