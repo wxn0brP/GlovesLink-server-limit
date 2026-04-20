@@ -14,6 +14,9 @@ export function setupSocket(
     function processSocketError(res: Socket_StandardRes, cb?: Function) {
         if (!res) {
             console.error("[GlovesLinkServer] Response is empty", res);
+            const stack = new Error().stack;
+            if (stack)
+                console.error(stack);
             return false;
         }
 
