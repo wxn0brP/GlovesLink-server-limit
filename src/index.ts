@@ -12,14 +12,6 @@ export function setupSocket(
     socket.onLimit = limiter.onLimit.bind(limiter);
 
     function processSocketError(res: Socket_StandardRes, cb?: Function) {
-        if (!res) {
-            console.error("[GlovesLinkServer] Response is empty", res);
-            const stack = new Error().stack;
-            if (stack)
-                console.error(stack);
-            return false;
-        }
-
         const err = res.err;
         if (!Array.isArray(err)) return false;
 

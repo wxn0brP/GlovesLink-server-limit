@@ -10,6 +10,19 @@ export class SocketEventEngine {
             try {
                 const data = await cpu(socket, ...args);
 
+                if (!data) {
+                    console.error("[GlovesLinkServer] Response is empty.");
+                    console.error({
+                        evt,
+                        data,
+                        socket,
+                        args,
+                        cpu,
+                        isReturn,
+                    });
+                    return;
+                }
+
                 if (processSocketError(data)) return;
 
                 if (isReturn) {
