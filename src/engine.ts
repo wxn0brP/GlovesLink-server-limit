@@ -14,7 +14,7 @@ export class SocketEventEngine {
                     console.error("[GlovesLinkServer] Response is empty.");
                     console.error({
                         evt,
-                        data,
+                        res: data,
                         socket,
                         args,
                         cpu,
