@@ -21,7 +21,7 @@
         "@wxn0brp/biome": "*",
         "@wxn0brp/gloves-link-server": "~0.1.1",
         "tsc-alias": "^1",
-        "typescript": "^6"
+        "typescript": "^7.0.0"
     },
     "peerDependencies": {
         "@wxn0brp/ac": "~0.0.3",
