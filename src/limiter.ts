@@ -10,14 +10,18 @@ export class SocketEventLimiter {
 	resetTimers: Record<string, NodeJS.Timeout>;
 	spamThresholds: SpamThresholds;
 
-	constructor(socket: GLSocket, spamThresholds: Partial<SpamThresholds> = {}) {
+	constructor(
+		socket: GLSocket,
+		spamThresholds: Partial<SpamThresholds> = {},
+		public debugSpam = process.env.NODE_ENV !== "production",
+	) {
 		this.socket = socket;
 		this.eventCounters = {};
 		this.resetTimers = {};
 		this.spamThresholds = {
 			warningDelay: 100, // ms
-			warnLimit: 1,
-			spamLimit: 5,
+			warnLimit: 2,
+			spamLimit: 7,
 			disconnectLimit: 15,
 			resetInterval: 1000, // ms
 			banDuration: 10 * 60 * 1000, // 10 minutes in ms
@@ -91,6 +95,9 @@ export class SocketEventLimiter {
 					const time = Math.ceil(spamThresholds.resetInterval / 1000) + 1;
 					this.socket.emit("error.spam", "last", time);
 				}
+				if (this.debugSpam)
+					console.warn("[GlovesLinkServer] Spam limit exceeded.", eventName);
+
 				return;
 			}
 
