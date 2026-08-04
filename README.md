@@ -5,7 +5,7 @@ Rate limiting and event management library for GlovesLink server sockets.
 ## Installation
 
 ```bash
-bun add @wxn0brp/gls-limit @wxn0brp/gloves-link-server @wxn0brp/ac
+bun add @wxn0brp/gls-limit @wxn0brp/gloves-link-server @wxn0brp/ac @wxn0brp/falcon-frame
 ```
 
 ## Quick Start
@@ -25,8 +25,13 @@ const events: Events[][] = [
 async function handle_message(socket: GLSocket, message: string): Promise<Socket_StandardRes> {
   const res = new SocketRes("handle.message");
 
-  if (!message) return res.valid("message is required");
-  if (typeof message !== "string") return res.valid("message must be a string");
+  if (!socket.user) return res.valid("not logged in");
+
+  const invalid = res.check(
+    { message: "required|string|max:100" },
+    { message }
+  );
+  if (invalid) return invalid;
 
   return res.data("message sent");
 }
@@ -83,6 +88,28 @@ res.data({ key: "value" });           // Success response
 res.valid("Field is required");       // Validation error
 res.err("Something went wrong");      // General error
 ```
+
+### Validation with FalconFrame
+
+`SocketRes` integrates with FalconFrame's validation system:
+
+```typescript
+const res = new SocketRes("user.create");
+
+const invalid = res.check(
+  { 
+    name: "required|string|min:3|max:50",
+    email: "required|email",
+    age: "required|integer|between:18,120"
+  },
+  { name, email, age }
+);
+
+if (invalid) return invalid;
+// Validation passed, continue...
+```
+
+**Returns:** `null` if valid, or `Socket_StandardRes` with validation errors if invalid.
 
 ### Events
 
