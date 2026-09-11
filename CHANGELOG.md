@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.7](https://github.com/wxn0brP/GlovesLink-server-limit/compare/v0.0.6...v0.0.7) (2026-09-11)
+
+
+### Features
+
+* add spam debug logging & tune thresholds ([5ceae44](https://github.com/wxn0brP/GlovesLink-server-limit/commit/5ceae44af128e006273062bf6091df1f6117134c))
+* ff validate integration & bump deps ([88c6fc9](https://github.com/wxn0brP/GlovesLink-server-limit/commit/88c6fc935292a709be3bc720681faaa842920079))
+
+
+### Bug Fixes
+
+* name ([473cfee](https://github.com/wxn0brP/GlovesLink-server-limit/commit/473cfee554695afd80f828f0e889ced43eb227bc))
+
 ### [0.0.6](https://github.com/wxn0brP/GlovesLink-server-limit/compare/v0.0.5...v0.0.6) (2026-04-21)
 
 
